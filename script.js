@@ -36,6 +36,57 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     };
 
+    // Toggle Text Analyser Section
+    document.querySelector('a[href="#text-analyser"]').addEventListener('click', function(e) {
+        e.preventDefault();
+        const analyser = document.getElementById('text-analyser');
+        analyser.style.display = analyser.style.display === 'none' ? 'block' : 'none';
+        if (analyser.style.display === 'block') {
+            analyser.scrollIntoView({ behavior: 'smooth' });
+        }
+    });
+
+// Analysis Function
+document.getElementById('analyze-btn').addEventListener('click', function() {
+    const text = document.getElementById('text-input').value;
+    const resultsDiv = document.getElementById('results');
+    
+    // ===== 1. Basic Counts =====
+    const letters = text.replace(/[^a-zA-Z]/g, '').length;
+    const words = text.trim() === '' ? 0 : text.split(/\s+/).length;
+    const spaces = (text.match(/ /g) || []).length;
+    const newlines = (text.match(/\n/g) || []).length;
+    const symbols = text.replace(/[a-zA-Z0-9\s]/g, '').length;
+
+    // ===== 2. Pronouns (All types) =====
+    const pronounPattern = /\b(I|you|he|she|it|we|they|me|him|her|us|them|my|your|his|its|our|their|mine|yours|hers|ours|theirs)\b/gi;
+    const totalPronouns = (text.match(pronounPattern) || []).length;
+
+    // ===== 3. Prepositions (All types) =====
+    const prepPattern = /\b(in|on|at|by|for|with|about|between|under|after|before|to|from|up|down|over|under|around|through|into)\b/gi;
+    const totalPrepositions = (text.match(prepPattern) || []).length;
+
+    // ===== 4. Articles =====
+    const articles = (text.match(/\b(a|an)\b/gi) || []).length;
+
+    // ===== Generate Results =====
+    resultsDiv.innerHTML = `
+        <h3> Basic Statistics</h3>
+        <p><strong>Letters:</strong> ${letters} | <strong>Words:</strong> ${words}</p>
+        <p><strong>Spaces:</strong> ${spaces} | <strong>Newlines:</strong> ${newlines}</p>
+        <p><strong>Special Symbols:</strong> ${symbols}</p>
+        
+        <h3> Pronouns</h3>
+        <p>Total pronouns found: ${totalPronouns}</p>
+        
+        <h3> Prepositions</h3>
+        <p>Total prepositions found: ${totalPrepositions}</p>
+        
+        <h3> Articles</h3>
+        <p>Total articles found: ${articles}</p>
+    `;
+});
+
     // ===== 4. YOUR ORIGINAL FUNCTIONALITY =====
     // Typewriter effect
     setTimeout(() => {
