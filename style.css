@@ -299,6 +299,20 @@ body {
 
 
 
+/* Hometown Section */
+.hometown-section {
+    padding: 8rem 5%;
+}
+
+.hometown-section h2 {
+    font-size: 2rem;
+    text-align: left;
+    margin-bottom: 3rem;
+    color: white;
+}
+
+
+
 /* Responsive */
 @media (max-width: 768px) {
     .gallery-grid {

@@ -36,6 +36,8 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     };
 
+
+
     // Toggle Text Analyser Section
     document.querySelector('a[href="#text-analyser"]').addEventListener('click', function(e) {
         e.preventDefault();
@@ -131,6 +133,12 @@ document.getElementById('analyze-btn').addEventListener('click', function() {
         }, 100);
     });
 
+        // Add hometown section to observer
+document.querySelectorAll('.hometown-section .gallery-item').forEach(item => {
+    item.style.opacity = '0';
+    item.style.transform = 'translateY(20px)';
+    observer.observe(item);
+});
     // Profile modal
     document.querySelector('.profile-pic')?.addEventListener('click', function() {
         document.querySelector('.pfp-modal').style.display = 'flex';
