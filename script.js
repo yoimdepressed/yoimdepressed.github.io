@@ -11,15 +11,14 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log(`${timestamp} , click , ${elementType}`);
     });
 
-    // ===== 2. VIEW TRACKING =====
-    const sections = document.querySelectorAll('section');
+    // ===== 2. VIEW TRACKING & ANIMATIONS =====
     const sectionObserver = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
                 const timestamp = new Date().toISOString();
                 console.log(`${timestamp} , view , section (${entry.target.id})`);
                 
-                // Existing animation
+                // Animation handling
                 entry.target.style.opacity = '1';
                 entry.target.style.transform = 'translateY(0)';
                 entry.target.style.transition = 'all 0.6s ease';
@@ -27,7 +26,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }, { threshold: 0.1 });
 
-    // ===== 3. EXISTING ANIMATIONS =====
     const animateElements = (selector) => {
         document.querySelectorAll(selector).forEach((el, index) => {
             el.style.opacity = '0';
@@ -36,8 +34,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     };
 
-
-
+    // ===== 3. UI INTERACTIONS =====
     // Toggle Text Analyser Section
     document.querySelector('a[href="#text-analyser"]').addEventListener('click', function(e) {
         e.preventDefault();
@@ -48,48 +45,85 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-// Analysis Function
-document.getElementById('analyze-btn').addEventListener('click', function() {
-    const text = document.getElementById('text-input').value;
-    const resultsDiv = document.getElementById('results');
-    
-    // ===== 1. Basic Counts =====
-    const letters = text.replace(/[^a-zA-Z]/g, '').length;
-    const words = text.trim() === '' ? 0 : text.split(/\s+/).length;
-    const spaces = (text.match(/ /g) || []).length;
-    const newlines = (text.match(/\n/g) || []).length;
-    const symbols = text.replace(/[a-zA-Z0-9\s]/g, '').length;
-
-    // ===== 2. Pronouns (All types) =====
-    const pronounPattern = /\b(I|you|he|she|it|we|they|me|him|her|us|them|my|your|his|its|our|their|mine|yours|hers|ours|theirs)\b/gi;
-    const totalPronouns = (text.match(pronounPattern) || []).length;
-
-    // ===== 3. Prepositions (All types) =====
-    const prepPattern = /\b(in|on|at|by|for|with|about|between|under|after|before|to|from|up|down|over|under|around|through|into)\b/gi;
-    const totalPrepositions = (text.match(prepPattern) || []).length;
-
-    // ===== 4. Articles =====
-    const articles = (text.match(/\b(a|an)\b/gi) || []).length;
-
-    // ===== Generate Results =====
-    resultsDiv.innerHTML = `
-        <h3> Basic Statistics</h3>
-        <p><strong>Letters:</strong> ${letters} | <strong>Words:</strong> ${words}</p>
-        <p><strong>Spaces:</strong> ${spaces} | <strong>Newlines:</strong> ${newlines}</p>
-        <p><strong>Special Symbols:</strong> ${symbols}</p>
+    // Text Analysis Functionality
+    document.getElementById('analyze-btn').addEventListener('click', function() {
+        const text = document.getElementById('text-input').value;
+        const resultsDiv = document.getElementById('results');
         
-        <h3> Pronouns</h3>
-        <p>Total pronouns found: ${totalPronouns}</p>
-        
-        <h3> Prepositions</h3>
-        <p>Total prepositions found: ${totalPrepositions}</p>
-        
-        <h3> Articles</h3>
-        <p>Total articles found: ${articles}</p>
-    `;
-});
+        // Basic Counts
+        const letters = text.replace(/[^a-zA-Z]/g, '').length;
+        const words = text.trim() === '' ? 0 : text.split(/\s+/).length;
+        const spaces = (text.match(/ /g) || []).length;
+        const newlines = (text.match(/\n/g) || []).length;
+        const symbols = text.replace(/[a-zA-Z0-9\s]/g, '').length;
 
-    // ===== 4. YOUR ORIGINAL FUNCTIONALITY =====
+        // Pronouns
+        const pronouns = {
+            'I': (text.match(/\bI\b/g) || []).length,
+            'you': (text.match(/\byou\b/gi) || []).length,
+            'he': (text.match(/\bhe\b/gi) || []).length,
+            'she': (text.match(/\bshe\b/gi) || []).length,
+            'it': (text.match(/\bit\b/gi) || []).length,
+            'we': (text.match(/\bwe\b/gi) || []).length,
+            'they': (text.match(/\bthey\b/gi) || []).length,
+            'me': (text.match(/\bme\b/gi) || []).length,
+            'him': (text.match(/\bhim\b/gi) || []).length,
+            'her': (text.match(/\bher\b/gi) || []).length,
+            'us': (text.match(/\bus\b/gi) || []).length,
+            'them': (text.match(/\bthem\b/gi) || []).length
+        };
+
+        // Prepositions
+        const prepositions = {
+            'in': (text.match(/\bin\b/gi) || []).length,
+            'on': (text.match(/\bon\b/gi) || []).length,
+            'at': (text.match(/\bat\b/gi) || []).length,
+            'by': (text.match(/\bby\b/gi) || []).length,
+            'for': (text.match(/\bfor\b/gi) || []).length,
+            'with': (text.match(/\bwith\b/gi) || []).length,
+            'about': (text.match(/\babout\b/gi) || []).length,
+            'between': (text.match(/\bbetween\b/gi) || []).length,
+            'under': (text.match(/\bunder\b/gi) || []).length,
+            'after': (text.match(/\bafter\b/gi) || []).length
+        };
+
+        // Articles
+        const articles = {
+            'a': (text.match(/\ba\b/gi) || []).length,
+            'an': (text.match(/\ban\b/gi) || []).length
+        };
+
+        // Generate Results
+        resultsDiv.innerHTML = `
+            <h3> Basic Statistics</h3>
+            <p><strong>Letters:</strong> ${letters} | <strong>Words:</strong> ${words}</p>
+            <p><strong>Spaces:</strong> ${spaces} | <strong>Newlines:</strong> ${newlines}</p>
+            <p><strong>Special Symbols:</strong> ${symbols}</p>
+            
+            <h3> Pronouns</h3>
+            <ul>
+                ${Object.entries(pronouns)
+                  .map(([word, count]) => `<li>${word}: ${count}</li>`)
+                  .join('')}
+            </ul>
+            
+            <h3> Prepositions</h3>
+            <ul>
+                ${Object.entries(prepositions)
+                  .map(([word, count]) => `<li>${word}: ${count}</li>`)
+                  .join('')}
+            </ul>
+            
+            <h3> Indefinite Articles</h3>
+            <ul>
+                ${Object.entries(articles)
+                  .map(([word, count]) => `<li>${word}: ${count}</li>`)
+                  .join('')}
+            </ul>
+        `;
+    });
+
+    // ===== 4. GENERAL WEBSITE FUNCTIONALITY =====
     // Typewriter effect
     setTimeout(() => {
         const typewriter = document.querySelector('.typewriter');
@@ -133,12 +167,6 @@ document.getElementById('analyze-btn').addEventListener('click', function() {
         }, 100);
     });
 
-        // Add hometown section to observer
-document.querySelectorAll('.hometown-section .gallery-item').forEach(item => {
-    item.style.opacity = '0';
-    item.style.transform = 'translateY(20px)';
-    observer.observe(item);
-});
     // Profile modal
     document.querySelector('.profile-pic')?.addEventListener('click', function() {
         document.querySelector('.pfp-modal').style.display = 'flex';
@@ -155,7 +183,7 @@ document.querySelectorAll('.hometown-section .gallery-item').forEach(item => {
         }
     });
 
-    // ===== 5. EASTER EGG (LAST) =====
+    // ===== 5. EASTER EGG =====
     console.log('%cLooking for something?', 'font-size: 18px; color: #e63946;');
     console.log('%cThis website runs on: 30% code, 50% memes, 20% pure luck', 'color: #f9f9f9;');
 });
